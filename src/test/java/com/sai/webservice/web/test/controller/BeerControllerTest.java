@@ -1,13 +1,17 @@
 package com.sai.webservice.web.test.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sai.webservice.web.controller.BeerController;
 import com.sai.webservice.web.model.BeerDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 
 import java.util.UUID;
 
@@ -16,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 
-
-
+@SpringBootTest
+@WebMvcTest
+@AutoConfigureMockMvc
 class BeerControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
-
+    private MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -33,8 +37,9 @@ class BeerControllerTest {
         mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID().toString()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-    }
 
+
+    }
 
 
 
@@ -51,6 +56,13 @@ class BeerControllerTest {
     }
 
     @Test
-    void updateInfoById() {
+    void updateBeerById() throws Exception {
+        BeerDto beerDto = BeerDto.builder().build();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerDtoJson))
+                .andExpect(status().isNoContent());
     }
 }
